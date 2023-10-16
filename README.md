@@ -25,7 +25,7 @@
     
     
  本项目使用并比较了两种经典的语义分割模型在cityscape数据集下的性能表现，并进行了针对性地优化，成功完成了高准确度和低延迟的需求。自动驾驶车辆开发实时对象检测模型。参赛团队需要创建一个深度学习模型，用于准确检测行人、车辆、交通标志和交通信号等对象。该模型需要具有高准确度和低延迟，能够满足自动驾驶车辆安全导航的需求。  
- 使用英特尔® oneAPI 可以进一步优化模型在实际交通场景下的应用，该工具可以提高计算密集型图像处理的性能，减少训练时间和推理时间，并能够压缩模型，确保其在边缘设备上高效运行，从而扩展复杂模型的使用。(具体请参见[Intel® Optimized Implementation](#Intel&reg-Optimized-Implementation))  
+ 使用英特尔® oneAPI 可以进一步优化模型在实际交通场景下的应用，该工具可以提高计算密集型图像处理的性能，减少训练时间和推理时间，并能够压缩模型，确保其在边缘设备上高效运行，从而扩展复杂模型的使用。(具体请参见[Intel® Optimized Implementation](#Intel-implementation))  
 
 <a id="reference-solution"></a>
 ## Choice Of Model
@@ -45,7 +45,7 @@
 <a id='Intel-implementation'></a>
 ## Intel® Optimized Implementation
 | 英特尔®优化实现方式
-本方案中的训练与推理部分采用Intel Optimization for Pytorch 完成，而量化与剪枝则使用Intel Neutral Compressor完成模型压缩，这些工具之间的关系由下图所示：  
+本方案中的训练与推理部分采用Intel Optimization for Pytorch 完成，而量化与剪枝则使用Intel Neural Compressor完成模型压缩，这些工具之间的关系由下图所示：  
 ![Intel AI 工具包](resources/AI%20toolkit.png)
   - **Intel Optimization for Pytorch(训练与推理)**
   ```
@@ -59,7 +59,7 @@
   本项目采用的量化方式是Post Training Static Quantization with accuracy aware tuning, 这种组合方式是目前最佳的性能实现,原因在于静态量化相比于动态量化往往能提供更好的效果，并且accuracy aware tuning通过设置一个目标进行迭代(accuracy goal), 允许我们遭受尽可能少地精度损失。
 
   ### 量化效果
-  由于量化模型将部分FP32精度的参数转化为INT8储存并参与推理，在提高推理速度的同时必然遭受精度损失。通过将Pytorch框架下的量化工具与Intel Neutral Compressor里的量化工具进行比较，测试发现后者相比于前者，在实现两倍加速效果的同时只遭受了略多的精度损失(1.2%)。 因此，建议在量化模型时尽可能使用Intel Neutral Compressor 里的量化工具。
+  由于量化模型将部分FP32精度的参数转化为INT8储存并参与推理，在提高推理速度的同时必然遭受精度损失。通过将Pytorch框架下的量化工具与Intel Neural Compressor里的量化工具进行比较，测试发现后者相比于前者，在实现两倍加速效果的同时只遭受了略多的精度损失(1.2%)。 因此，建议在量化模型时尽可能使用Intel Neural Compressor 里的量化工具。
   ![量化结果](resources/INC.png)
 
 <a id="performance-observations"></a>   
@@ -79,7 +79,7 @@
     ![flops](resources/flops.png)  ![params](resources/params.png)  
 
   - 效果观察(200个epoch下)  
-    | ... | Unet | Hrnetv2 
+    | ... | Hrnetv2 | Unet 
     | :--: | :--: | :--:
     | **MIOU** | 0.68 | 0.49
     | **PA** | 0.87 | 0.66
